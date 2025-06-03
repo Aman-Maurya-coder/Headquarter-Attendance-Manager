@@ -13,9 +13,9 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    console.log("Form submitted", formData);
     try {
-      const res = await fetch('http://localhost:8000/', {
+      const res = await fetch('http://localhost:8000/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const Signup = () => {
           className="bg-slate-100 p-3 rounded-lg"
           onChange={handleChange}
         />
-        <button className="bg-sky-700 rounded-lg uppercase hover:opacity-85 p-4 text-blue-50 w-48 m-auto">
+        <button className="bg-sky-700 rounded-lg uppercase hover:opacity-85 p-4 text-blue-50 w-48 m-auto" type="submit" >
           Sign Up
         </button>
       </form>
