@@ -1,15 +1,21 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv"
+
+dotenv.config({
+  path:"./env"
+})
+
 
 const app = express();
 
 const users = [];
 
 app.post("/signup", (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { first_name, last_name, email, e_pw,c_pw } = req.body;
 
-  if (!firstName || !lastName || !email || !password) {
+  if (!first_name || !last_name || !email || !e_pw || !c_pw) {
     return res.status(400).json({ message: "All fields are required" });
   }
   if (!email.endsWith("@gmail.com")){
@@ -23,7 +29,7 @@ app.post("/signup", (req, res) => {
   if(userExists){
     return res.status(400).json({messgae:"Email already registered"})
   }
-  const newUser={firstName,lastName,email,password};
+  const newUser={first_name,last_name,email,password,e_pw,c_pw};
   users.push(newUser);
 
   res.status(201).json({message:"Signupn Successful",user:newUser})
@@ -41,8 +47,8 @@ app.post('/login',(req,res)=>{
     res.status(200).json({message:"Login Successful",user:existingUser});
 });
 
-app.listen(process.env.PORT,()=>{
-    console.log(`Server is running on local host ${process.env.PORT}`)
+app.listen(process.env.PORT || 8000,()=>{
+    console.log(`Server is running on local host ${process.env.PORT||8000}`)
 });
 
 
