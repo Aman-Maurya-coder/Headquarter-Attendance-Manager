@@ -41,7 +41,7 @@ app.post('/login',(req,res)=>{
     res.status(200).json({message:"Login Successful",user:existingUser});
 });
 
-app.listen(process.env.PORT,()=>{
+app.listen(process.env.PORT ||8000, ()=>{
     console.log(`Server is running on local host ${process.env.PORT}`)
 });
 
@@ -49,7 +49,7 @@ app.listen(process.env.PORT,()=>{
 app.use(
   cors({
     credentials: true,
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN ||"*",
   })
 );
 

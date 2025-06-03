@@ -5,18 +5,36 @@ import { Link } from "react-router-dom";
 
 const Signup = () => {
   const[formData,setFormData] = useState({});
-  const [error, seterror] = useState(null)
+  const [error, setError] = useState(null)
 
   const handleChange =(e) =>{
     setFormData({ ...formData,[e.target.id]: e.target.value})
   };
 
-  const handleSubmit = (e) =>{
-    e.preventDefault()
-    // const res = await fetch('Link of Backend' , formData); 
-    // const data = await res.json() ;
-    // console.log(data)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch('http://localhost:8000/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        throw new Error("Something went wrong while signing up");
+      }
+
+      const data = await res.json();
+      console.log(data);
+
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
+  };
 
   console.log(formData)
   return (
