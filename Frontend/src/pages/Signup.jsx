@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 const Signup = () => {
@@ -36,6 +36,7 @@ const Signup = () => {
 
       const result = await res.json();
       console.log(result);
+          navigate("/");
     } catch (err) {
       console.error(err);
     }
@@ -43,7 +44,7 @@ const Signup = () => {
 
   return (
     <>
-      <div className="p-3 max-w-lg mx-auto mt-6">
+      <div className="p-3 max-w-lg mx-auto mt-5">
         <h1 className="text-3xl text-center font-semibold  my-7 ">Sign Up</h1>
 
         <form
