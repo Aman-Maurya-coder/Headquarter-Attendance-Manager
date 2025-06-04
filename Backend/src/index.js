@@ -24,36 +24,36 @@ app.use(express.urlencoded({extended:true}));
 const users = [];
 
 app.post("/signup", (req, res) => {
-    const { firstName, lastName, email, password, confirm_pass } = req.body;
+    const { first_name, last_name, Email, e_pw, c_pw } = req.body;
     console.log(req.body);
 
-  if (!firstName || !lastName || !email || !password) {
+  if (!first_name || !last_name || !Email || !e_pw || !c_pw) {
     return res.status(400).json({ message: "All fields are required" });
   }
-  if (!email.endsWith("@gmail.com")) {
+  if (!Email.endsWith("@gmail.com")) {
     return res.status(400).json({ messgae: "Invalid Email" });
   }
-  if (password.length < 8) {
+  if (e_pw.length < 8) {
     return res.status(400)({
       messgae: "Password must be at least 8 character long",
     });
   }
-  const userExists = users.find((user) => user.email === email);
+  const userExists = users.find((user) => user.Email === Email);
 
   if (userExists) {
     return res.status(400).json({ messgae: "Email already registered" });
   }
-  const newUser = { firstName, lastName, email, password };
+  const newUser = { first_name, last_name, Email, e_pw, c_pw };
   users.push(newUser);
 
   res.status(201).json({ message: "Signup Successful" });  //, user: newUser
 });
 
 app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const { Email, e_pw } = req.body;
 
   const existingUser = users.find(
-    (user) => user.email === email && user.password === password
+    (user) => user.Email === email && user.password === password
   );
 
   if (!existingUser) {
