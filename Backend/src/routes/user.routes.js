@@ -1,21 +1,25 @@
 import express from "express"
-import { registerUser } from "../controllers/user.controllers.js";
-const userRouter = express.Router()
-userRouter.route("/signup").post(registerUser)
+import { existingUser, registerUser } from "../controllers/user.controllers.js"
+const router = express.Router()
 
-// const users=[];
+router.route("/signup").post(registerUser)
+router.route("/login").post(existingUser)
 
-// router.post("/login", (req, res) => {
-//   const { Email, e_pw } = req.body;
 
-//   const existingUser = users.find(
-//     (user) => user.Email === Email && user.e_pw === e_pw
-//   );
 
-//   if (!existingUser) {
-//     return res.status(401).json({ messgae: "Invalid email or password" });
-//   }
-//   res.status(200).json({ message: "Login Successful", user: existingUser });
-// });
 
-export default userRouter
+
+export default router
+
+
+
+
+
+
+
+
+
+
+
+
+
