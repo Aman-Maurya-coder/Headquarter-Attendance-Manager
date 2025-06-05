@@ -1,1 +1,1 @@
-export const DB_NAME = "attendance_manager"
+export const DB_NAME = "attendance_manager";
