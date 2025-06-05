@@ -1,7 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import { Link ,useNavigate} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+
+
 
 const Signup = () => {
   const {
@@ -20,9 +23,10 @@ const Signup = () => {
   };
 
   const onSubmitt = async (data) => {
+    let navigate = useNavigate();
     console.log(data);
     try {
-      const res = await fetch("http://localhost:8000/", {
+      const res = await fetch("http://localhost:8000/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +40,7 @@ const Signup = () => {
 
       const result = await res.json();
       console.log(result);
-          navigate("/");
+      navigate("/");
     } catch (err) {
       console.error(err);
     }

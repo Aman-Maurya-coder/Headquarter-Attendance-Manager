@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 const Signin = () => {
+  let navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -22,7 +24,7 @@ const Signin = () => {
   const onSubmitt = async (data) => {
     console.log(data);
     try {
-      const res = await fetch("http://localhost:8000/", {
+      const res = await fetch("http://localhost:8000/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,9 +36,8 @@ const Signin = () => {
       if (result.success === false) {
         throw new Error("Something went wrong while signing in");
       }
-
-      console.log(result);
       navigate("/");
+      console.log(result);
     } catch (err) {
       console.error(err);
     }
