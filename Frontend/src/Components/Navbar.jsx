@@ -15,10 +15,10 @@ export default function Navbar() {
           <Link to='/'>
             <li>Home</li>
           </Link>
-          <Link to='/Signup'>
+          <Link to='/signup'>
             <li>Sign Up</li>
           </Link>
-          <Link to='/Signin'>
+          <Link to='/signin'>
             <li>Sign In</li>
           </Link>
           <Link to='/upload'>
@@ -27,7 +27,9 @@ export default function Navbar() {
           <Link to='/report'>
             <li>Report</li>
           </Link>
-          <Link to='/signin'>
+          <Link to='/dashboard'>
+            <li>Dashboard</li>
+
             {/* {currentUser ? (
               <img src={currentUser.profilePicture} alt='profile' className='h-7 w-7 rounded-full object-cover' />
             ) : ( */}
