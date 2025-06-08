@@ -21,7 +21,7 @@ const Signin = () => {
     });
   };
 
-  const formSubmit = async (data) => {
+  const onFormSubmit = async (data) => {
     console.log(data);
     try {
       const res = await fetch("http://localhost:8000/users/login", {
@@ -50,7 +50,7 @@ const Signin = () => {
 
         <form
           action=" "
-          onSubmit={handleSubmit(formSubmit)}
+          onSubmit={handleSubmit(onFormSubmit)}
           className="flex flex-col gap-4 justify-center"
         >
           <input
