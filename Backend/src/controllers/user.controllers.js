@@ -1,48 +1,60 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
-
-const users = [];
+import { ApiError } from "../utils/ApiError.js"
+import { User } from "../models/user.model.js"
+import { ApiResponse } from "../utils/ApiResponse.js"
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { first_name, last_name, email, e_pw, c_pw } = req.body;
+  const {first_name, last_name, email, e_pw, c_pw } = req.body;
   console.log(req.body);
 
   if (!first_name || !last_name || !email || !e_pw || !c_pw) {
-    return res.status(400).json({ message: "All fields are required" });
+    throw new ApiError(400,"All fields are Required")
   }
 
   if (!email.endsWith("@gmail.com")) {
-    return res.status(400).json({ message: "Invalid email" });
+    throw new ApiError(400,"Invalid Email")
   }
 
   if (e_pw.length < 8) {
-    return res.status(400).json({
-      message: "Password must be at least 8 characters long",
-    });
+    throw new ApiError(400,"Password must be at least 8 characters long")
   }
-  const userExists = users.find((user) => user.email === email);
 
+  const userExists = await User.findOne({email});
   if (userExists) {
-    return res.status(400).json({ message: "email already registered" });
+    throw new ApiError(409,"Email already registered")
   }
 
-  const newUser = { first_name, last_name, email, e_pw, c_pw };
-  users.push(newUser);
+  const user= await User.create({
+    first_name,
+    last_name,
+    email,
+    password:e_pw,
+  })
 
-  res.status(201).json({ message: "Signup Successful" });
-});
+  const createdUser= await User.findById(user._id).select(
+    "-password -refreshToken"
+  )
 
-const existingUser = asyncHandler(async (req, res) => {
-  const { email, e_pw } = req.body;
-
-  const existedUser = users.find(
-    (user) => user.email === email && user.e_pw === e_pw
-  );
-
-  if (!existedUser) {
-    return res.status(401).json({ message: "Invalid email or password" });
+  if (!createdUser){
+    throw new ApiError(500,"Something went wrong")
   }
 
-  res.status(200).json({ message: "Login Successful" });
-});
+  return res.status(201).json(
+    new ApiResponse(200,createdUser,"User Registered Successfully")
+  )
+})
 
-export { registerUser, existingUser };
+
+// const existingUser = asyncHandler(async (req, res) => {
+//   const { email, password } = req.body;
+
+//   const existedUser = User.find({email})
+
+//   if (!existedUser) {
+//     return res.status(401).json({ message: "Invalid email or password" });
+//   }
+
+//   res.status(200).json({ message: "Login Successful" });
+// });
+
+export { registerUser };
