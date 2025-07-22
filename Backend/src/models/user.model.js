@@ -42,7 +42,7 @@ userSchema.pre('save', async function(next){  // pre-save hook to hash password
     next();
 })
 
-userSchema.methods.comparePassword = async function(password) { // method to compare password
+userSchema.methods.isPasswordCorrect = async function(password) { // method to compare password
     return await bcrypt.compare(password, this.password);
 }
 
