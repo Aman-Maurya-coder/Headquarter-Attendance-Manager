@@ -1,13 +1,13 @@
 import express from "express"
-import { loginUser, registerUser, logoutUser } from "../controllers/user.controllers.js"
-const userRouter = express.Router()
+import { registerUser } from "../controllers/user.controllers.js"
+const router = express.Router()
 
-userRouter.route("/signup").post(registerUser)
+router.route("/signup").post(registerUser)
+// router.route("/login").post(existingUser)
 
-userRouter.route("/login").post(loginUser)
-
-userRouter.route("/logout").post(logoutUser)
-
+// Secured Routes
+router.route("/logout").post(authMiddleware, logout)
+router.route("/refreshToken").post(refreshAccessToken)
 
 
 
