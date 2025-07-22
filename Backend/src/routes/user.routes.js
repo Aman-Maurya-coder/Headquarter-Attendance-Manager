@@ -1,15 +1,17 @@
 import express from "express"
-import { registerUser } from "../controllers/user.controllers.js"
-const router = express.Router()
+import { registerUser, loginUser, logoutUser} from "../controllers/user.controllers.js"
+import { authMiddleware } from "../middlewares/auth.middleware.js"
 
-router.route("/signup").post(registerUser)
-// router.route("/login").post(existingUser)
+const userRouter = express.Router()
 
-// Secured Routes
-router.route("/logout").post(authMiddleware, logout)
-router.route("/refreshToken").post(refreshAccessToken)
+// For registering a new user
+userRouter.route("/signup").post(registerUser)
 
+// For logging in a user
+userRouter.route("/login").post(loginUser)
 
+//fior logging out a user
+userRouter.route("/logout").post(authMiddleware, logoutUser)
 
 
 export default userRouter
