@@ -8,10 +8,13 @@ import Signin from "./pages/Signin";
 import Navbar from "./Components/Navbar";
 import Report from "./pages/Report";
 import Upload from "./pages/Upload";
+import Arrow from "./Components/Arrow";
+
 
 function App() {
   return (
     <BrowserRouter><Navbar />
+    {/* <Arrow/> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/Signin" element={<Signin />} />

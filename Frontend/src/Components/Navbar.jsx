@@ -1,43 +1,45 @@
-import { Link } from 'react-router-dom';
-import React from 'react'
-
-// import { useSelector } from 'react-redux';
+import { NavLink } from 'react-router-dom';
+import React from 'react';
 
 export default function Navbar() {
-  // const { currentUser } = useSelector((state) => state.user);
+  const navLinkClass = ({ isActive }) =>
+  isActive
+      ? 'text-blue-600 font-semibold hover:text-blue-700'
+      : 'text-gray-700 hover:text-blue-700';
+  
   return (
-    <div className='bg-blue-50'>
-      <div className='flex justify-between items-center max-w-6xl mx-auto p-3 '>
-        <Link to='/'>
-          <h1 className='font-bold'>Hq Attendance Manager</h1>
-        </Link>
-        <ul className='flex gap-6'>
-          <Link to='/'>
-            <li>Home</li>
-          </Link>
-          <Link to='/signup'>
-            <li>Sign Up</li>
-          </Link>
-          <Link to='/signin'>
-            <li>Sign In</li>
-          </Link>
-          <Link to='/upload'>
-            <li>Upload</li>
-          </Link>
-          <Link to='/report'>
-            <li>Report</li>
-          </Link>
-          <Link to='/dashboard'>
-            <li>Dashboard</li>
-
-            {/* {currentUser ? (
-              <img src={currentUser.profilePicture} alt='profile' className='h-7 w-7 rounded-full object-cover' />
-            ) : ( */}
-            {/* <li>Sign In</li>
-            )} */}
-          </Link>
-        </ul>
+    <div className='bg-gray-200 grid grid-cols-24 grid-rows-1 gap-4 p-5 sticky top-0 z-10'>
+      <div className='col-span-2 col-start-2 col-end-8 justify-self-auto'>
+        <NavLink to='/' className='font-bold'>
+          <h1>Hq Attendance Manager</h1>
+        </NavLink>
       </div>
+
+      <ul className='flex justify-between col-start-9 col-end-18 font-jetbrain font-normal w-full'>
+        <NavLink to='/' className={navLinkClass}>
+          <li>Home</li>
+        </NavLink>
+
+        <NavLink to='/signup' className={navLinkClass}>
+          <li>Sign Up</li>
+        </NavLink>
+
+        <NavLink to='/signin' className={navLinkClass}>
+          <li>Sign In</li>
+        </NavLink>
+
+        <NavLink to='/upload' className={navLinkClass}>
+          <li>Upload</li>
+        </NavLink>
+
+        <NavLink to='/report' className={navLinkClass}>
+          <li>Report</li>
+        </NavLink>
+
+        <NavLink to='/dashboard' className={navLinkClass}>
+          <li>Dashboard</li>
+        </NavLink>
+      </ul>
     </div>
   );
 }
