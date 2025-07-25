@@ -1,33 +1,29 @@
 import {Schema, model} from 'mongoose';
 import { Subject } from './subject.model';
 import { User } from './user.model';
-import { Day } from './day.model';
+
 
 const scheduleSchema = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
-        ref: User,
+        ref: 'User', // Should be a string representing the model name
         required: true
     },
-    subject_info: {
-        type: {
-            subject_name: {
-                type: Schema.Types.ObjectId,
-                ref: 'Subject',
-                required: true
-            },
-            days: [{
-                type: Schema.Types.ObjectId,
-                ref: 'Day',
-                required: true
-            }]
-        },
-        required: true,
+    timetable: {
+        Monday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
+        Tuesday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
+        Wednesday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
+        Thursday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
+        Friday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
+        Saturday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
+        Sunday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
     },
     totalTargetAttendance:{
         type: Number,
         default: 0,
-        required: true
+        required: true,
+        min: 0,
+        max: 100
     }
 },{
     timestamps: true
