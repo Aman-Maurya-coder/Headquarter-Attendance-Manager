@@ -39,6 +39,22 @@
   font-weight: 800;
   src: url('../fonts/jetbrains-mono-v23-latin-800.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
 }
+/* space-grotesk-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/space-grotesk-v21-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+/* space-grotesk-600 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  src: url('../fonts/space-grotesk-v21-latin-600.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
 
 /* html, body {
   font-family: 'JetBrains Mono', monospace;
@@ -49,6 +65,9 @@
   --card_shadow: 1px 1px 10px 0.5px rgba(0,0,0,0.25);
   --raleway:"Raleway",serif ;
   --font-jetbrain:"JetBrains Mono",serif;
+  --color_button :#0f1419 ;
+  --blue_site:#1e9df1;
+  --space:"Space Grotesk",sans-serif;
  }
 
 @theme inline {
@@ -56,7 +75,11 @@
   --shadow-card_shadow :var(--card_shadow);
   --font-raleway:var(--raleway);
   --font-jetbrain:var(--font-jetbrain);
+  --color-color_button:var(--color_button);
+  --color-blue_site:var(--blue_site);
+  --font-space:var(--space);
  }
+
 
 .Time_table{
   /* border: 2px solid black; */

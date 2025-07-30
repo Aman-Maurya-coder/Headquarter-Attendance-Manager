@@ -8,7 +8,7 @@ export default function Navbar() {
       : 'text-gray-700 hover:text-blue-700';
   
   return (
-    <div className='bg-gray-200 grid grid-cols-24 grid-rows-1 gap-4 p-5 sticky top-0 z-10'>
+    <div className='bg-gray-200 grid grid-cols-24 grid-rows-1 gap-4 p-5 sticky top-0 z-20'>
       <div className='col-span-2 col-start-2 col-end-8 justify-self-auto'>
         <NavLink to='/' className='font-bold'>
           <h1>Hq Attendance Manager</h1>
