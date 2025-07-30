@@ -1,6 +1,11 @@
 import {Schema, model} from 'mongoose';
 
 const subjectSchema = new Schema({
+    user_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'User', // Should be a string representing the model name
+        required: true
+    },
     name:{
         type: String,
         required: true,
@@ -13,26 +18,17 @@ const subjectSchema = new Schema({
         unique: true,
         index: true
     },
-    present: {
-        type: Number,
-        default: 0
-    },
-    absent: {
-        type: Number,
-        default: 0
-    },
-    classes: {
-        type: Number,
-        default: 0
-    },
+    totalClasses: { type: Number, default: 0 },         // total times class happened
+    attendedClasses: { type: Number, default: 0 },     // total times user was present
     targetAttendance: {
         type: Number,
-        default: 0
-    }
+        default: 75,
+        min: 0,
+        max: 100
+    },
 },
 {
     timestamps: true
 }
 )
-
 export const Subject = model('Subject', subjectSchema);
