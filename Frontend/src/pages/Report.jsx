@@ -1,10 +1,10 @@
 import React from 'react'
-import { ContinuousCalendar, Select } from '../Components/Calender'
+import Calender from '../Components/Calender'
 
 const Report = () => {
   return (
     <div>
-      <ContinuousCalendar/>
+      <Calender/>
     </div>
   )
 }
