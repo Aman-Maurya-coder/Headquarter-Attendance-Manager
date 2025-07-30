@@ -1,6 +1,4 @@
 import {Schema, model} from 'mongoose';
-import { Subject } from './subject.model';
-import { User } from './user.model';
 
 
 const scheduleSchema = new Schema({

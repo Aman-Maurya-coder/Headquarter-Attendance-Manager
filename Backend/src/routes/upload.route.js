@@ -1,5 +1,5 @@
 import express from "express";  
-import { addSubject, deleteSubject, getSubjects } from "../controllers/upload.controllers";
+import { addSubject, deleteSubject, getSubjects } from "../controllers/upload.controllers.js";
 const uploadRouter = express.Router();
 
 uploadRouter.route("/add").post(addSubject)
