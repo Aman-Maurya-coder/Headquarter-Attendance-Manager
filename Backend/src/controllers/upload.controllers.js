@@ -117,7 +117,7 @@ export const addSubject = asyncHandler(async (req, res) => {
   }
 
   // Respond with success
-  res.status(200).json(
+  return res.status(200).json(
     new ApiResponse(200, "Subject added successfully", {
       sub_name,
     })

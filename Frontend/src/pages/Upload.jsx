@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import Arrow from "../Components/Arrow";
 import Handlechange from "../Components/HandleChange";
+import { ClockFading } from "lucide-react";
 
 
 const Upload = () => {
@@ -14,9 +15,18 @@ const Upload = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const [users, setUsers] = useState([]);
+  const [user_sub, setUser_sub] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [day_sub , setDay_sub] = useState({
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [],
+    sunday: []
+  });
 
   const formSubmit = async (data) => {
     try {
@@ -48,6 +58,7 @@ const Upload = () => {
       }
       const result = await res.json();
       console.log(result);
+      setUser_sub((prev) => [...prev, data.sub_name]);
     } catch (err) {
       console.error(err);
     }
@@ -69,10 +80,29 @@ const Upload = () => {
         if (!res.ok) {
           throw new Error('Failed to fetch Subjectsss');
         }
-        const data = await res.json();
-        console.log(data)
-        setUsers(data?.data);
-        console.log(users);
+        let data = await res.json();
+        console.log("Fetched data:", data);
+        data = data.data;
+        // console.log("Fetched data:", data);
+        let unique_subjects=new Set();
+        let subjects = [];
+        for (let day of weekdays) {
+          day=day.toLowerCase()
+          // console.log("Day:", day);
+          let weekday_sub = data[day];
+          let day_sub_name= weekday_sub.map((sub) => sub.subjectId.name);
+          // console.log(day_sub_name)
+          setDay_sub((prev) => ({ ...prev, [day]: day_sub_name }));
+          console.log(day_sub)
+          
+          for (let subject of weekday_sub) {
+            subjects.push(subject.subjectId.name)
+          }
+          // console.log("Subjects:", subjects);
+          subjects.forEach(element => unique_subjects.add(element));
+        }
+        console.log(day_sub);
+        setUser_sub([...unique_subjects])
       } catch (err) {
         setError(err.message);
       } finally {
@@ -82,8 +112,8 @@ const Upload = () => {
     fetchData();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  // if (loading) return <p>Loading...</p>;
+  // if (error) return <p>Error: {error}</p>;
 
   return (
     <div className="font-space font-semibold">
@@ -220,12 +250,12 @@ const Upload = () => {
           </h1>
           <div>
             <ul className="flex contain-content flex-wrap gap-1 p-2.5 ">
-              {users.map((user) => (
+              {user_sub.map((subject) => (
                 <li
-                  key={user.id}
+                  key={subject}
                   className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                 >
-                  {user.name}
+                  {subject}
                 </li>
               ))}
             </ul>
@@ -239,6 +269,7 @@ const Upload = () => {
             <div>
               <h1>Monday:</h1>
               <ul className="flex contain-content flex-wrap gap-1 p-2.5 ">
+
                 {/* {users.days.map((day) => (
                   <li
                     key={day}
