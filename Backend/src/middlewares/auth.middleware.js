@@ -1,26 +1,29 @@
-import {asyncHandler} from '../utils/asyncHandler.js';
-import {User} from '../models/user.model.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
-import jwt  from  "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
+export const authMiddleware = asyncHandler(async (req,res,next) => {
+    const bearerToken = req.headers["authorization"];
+    const token = req.cookies?.accessToken || (bearerToken?.startsWith("Bearer ") ? bearerToken.slice(7) : null);
+    console.log("token:", token);
 
-export const authMiddleware = asyncHandler( async (req, _, next ) => {
+    if (!token) {
+        throw new ApiError(401, "Unauthorized Access - No token provided");
+    }
+
     try {
-        const token = req?.cookies?.token || req.headers["Authorization"]?.replace("Bearer ", "");
-        if (!token){
-            throw new ApiError(401, "Unauthorized Access");
-        }
-        const decoded_token = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        
-        const user = await User.findById(decoded_token._id).select("-password -refreshToken");
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        const user = await User.findById(decoded._id).select("-password -refreshToken");
 
-        if(!user){
-            throw new ApiError(404, "Invalid Token");
+        if (!user) {
+            throw new ApiError(404, "User not found");
         }
 
         req.user = user;
         next();
-    } catch (error) {
-        throw new ApiError(401, error?.message || "Invalid Access Token");
+    } catch (err) {
+        console.error("JWT Error:", err.name, err.message);
+        throw new ApiError(401, `Malformed or Invalid JWT: ${err.message}`);
     }
-})
+});
