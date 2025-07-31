@@ -5,6 +5,7 @@ import connectDB from "./db/index.js"
 dotenv.config({
   path: "./.env",
 });
+console.log(process.env.MONGODB_URI);
 connectDB()
 .then(() => {
     app.listen(process.env.PORT || 8000, () => {

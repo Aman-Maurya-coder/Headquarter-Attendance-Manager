@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 
 
 const Signup = () => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -23,10 +24,10 @@ const Signup = () => {
   };
 
   const onSubmitt = async (data) => {
-    let navigate = useNavigate();
+    
     console.log(data);
     try {
-      const res = await fetch("http://localhost:8000/users/signup", {
+      const res = await fetch("http://localhost:8000/api/v1/users/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +41,7 @@ const Signup = () => {
 
       const result = await res.json();
       console.log(result);
-      navigate("/");
+      navigate("/upload");
     } catch (err) {
       console.error(err);
     }

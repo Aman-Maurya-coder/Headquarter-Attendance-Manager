@@ -34,7 +34,7 @@ const Upload = () => {
     }
         console.log(data);
 
-      const res = await fetch("http://localhost:8000/api/v1/addSubject", {
+      const res = await fetch("http://localhost:8000/api/v1/upload/addSubject", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const Upload = () => {
       });
 
       if (!res.ok) {
-        throw new Error("Something went wrong while signing up");
+        throw new Error("Something went wrong while Adding Subject");
       }
       const result = await res.json();
       console.log(result);
@@ -57,11 +57,12 @@ const Upload = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('https://jsonplaceholder.typicode.com/users');
+        const res = await fetch('http://localhost:8000/api/v1/upload/getSubjects');
         if (!res.ok) {
-          throw new Error('Failed to fetch');
+          throw new Error('Failed to fetch Subjectsss');
         }
         const data = await res.json();
+        console.log(data)
         setUsers(data);
       } catch (err) {
         setError(err.message);

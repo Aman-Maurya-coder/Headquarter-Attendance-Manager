@@ -70,16 +70,16 @@ export const addSubject = asyncHandler(async (req, res) => {
     }
 
     // Respond with success
-    res.status(201).json(
-        new ApiResponse(201, "Subject added successfully", {
+    res.status(200).json(
+        new ApiResponse(200, "Subject added successfully", {
             sub_name
         })
     );
 })
 
 export const getSubjects = asyncHandler(async (req, res) => {
-    const user_id = req.user._id;
-
+    const user_id = req.user;
+    console.log(user_id);
     // all subjects for the user
     const schedule = await Schedule.findOne({ user_id }).populate({
         path: 'timetable.monday timetable.tuesday timetable.wednesday timetable.thursday timetable.friday timetable.saturday timetable.sunday',

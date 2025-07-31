@@ -24,7 +24,7 @@ const Signin = () => {
   const onFormSubmit = async (data) => {
     console.log(data);
     try {
-      const res = await fetch("http://localhost:8000/users/login", {
+      const res = await fetch("http://localhost:8000/api/v1/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,7 +36,7 @@ const Signin = () => {
       if (result.success === false) {
         throw new Error("Something went wrong while signing in");
       }
-      navigate("/");
+      navigate("/upload");
       console.log(result);
     } catch (err) {
       console.error(err);
@@ -82,7 +82,7 @@ const Signin = () => {
             type="password"
             placeholder="Enter Password"
             className="bg-slate-100 p-3 rounded-lg"
-            {...register("e_pw", {
+            {...register("password", {
               required: { value: true, message: "This field is required" },
               minLength: {
                 value: 8,
@@ -90,7 +90,7 @@ const Signin = () => {
               },
             })}
           />
-          {errors.e_pw && (
+          {errors.password && (
             <div
               style={{
                 marginTop: "-15px",
@@ -99,7 +99,7 @@ const Signin = () => {
               }}
               className="text-red-500 p-0 my-0"
             >
-              {errors.e_pw.message}{" "}
+              {errors.password.message}{" "}
             </div>
           )}
 

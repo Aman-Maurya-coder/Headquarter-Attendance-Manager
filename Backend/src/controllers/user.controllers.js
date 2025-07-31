@@ -99,7 +99,7 @@ const loginUser = asyncHandler(async(req,res)=>{
         secure:true,
         sameSite:"Lax",
     }
-    return res.status(200)
+    res.status(200)
     .cookie("accessToken",accessToken,options)
     .cookie("refreshToken",refreshToken,options)
     .json(
