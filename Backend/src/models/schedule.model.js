@@ -1,30 +1,38 @@
-import {Schema, model} from 'mongoose';
+import { Schema, model } from "mongoose";
 
-
-const scheduleSchema = new Schema({
+const scheduleSchema = new Schema(
+  {
     user_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'User', // Should be a string representing the model name
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "User", // Should be a string representing the model name
+      required: true,
     },
     timetable: {
-        Monday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
-        Tuesday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
-        Wednesday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
-        Thursday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
-        Friday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
-        Saturday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
-        Sunday: [{ subjectId: { type: Schema.Types.ObjectId, ref: 'Subject' } }],
+      monday: [{ subjectId: { type: Schema.Types.ObjectId, ref: "Subject" } }],
+      tuesday: [{ subjectId: { type: Schema.Types.ObjectId, ref: "Subject" } }],
+      wednesday: [
+        { subjectId: { type: Schema.Types.ObjectId, ref: "Subject" } },
+      ],
+      thursday: [
+        { subjectId: { type: Schema.Types.ObjectId, ref: "Subject" } },
+      ],
+      friday: [{ subjectId: { type: Schema.Types.ObjectId, ref: "Subject" } }],
+      saturday: [
+        { subjectId: { type: Schema.Types.ObjectId, ref: "Subject" } },
+      ],
+      sunday: [{ subjectId: { type: Schema.Types.ObjectId, ref: "Subject" } }],
     },
-    totalTargetAttendance:{
-        type: Number,
-        default: 0,
-        required: true,
-        min: 0,
-        max: 100
-    }
-},{
-    timestamps: true
-})
+    totalTargetAttendance: {
+      type: Number,
+      default: 0,
+      required: true,
+      min: 0,
+      max: 100,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-export const Schedule = model('Schedule', scheduleSchema);
+export const Schedule = model("Schedule", scheduleSchema);

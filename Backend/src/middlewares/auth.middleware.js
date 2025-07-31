@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken";
 
 export const authMiddleware = asyncHandler(async (req,res,next) => {
     const bearerToken = req.headers["authorization"];
+    // console.log(req);
     const token = req.cookies?.accessToken || (bearerToken?.startsWith("Bearer ") ? bearerToken.slice(7) : null);
-    console.log("token:", token);
+    // console.log("token:", token);
 
     if (!token) {
         throw new ApiError(401, "Unauthorized Access - No token provided");

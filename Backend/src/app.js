@@ -10,7 +10,7 @@ const app = express()
 
 app.use(cors({
     credentials: true,
-    origin: "*",
+    origin: "http://localhost:5173", // Use environment variable or default to your frontend URL
 }));
 
 app.use(cookieParser());

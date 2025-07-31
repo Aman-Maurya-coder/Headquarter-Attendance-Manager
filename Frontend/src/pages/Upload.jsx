@@ -34,12 +34,13 @@ const Upload = () => {
     }
         console.log(data);
 
-      const res = await fetch("http://localhost:8000/api/v1/upload/addSubject", {
+      const res = await fetch("http://localhost:8000/api/v1/upload/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: 'include',
       });
 
       if (!res.ok) {
@@ -57,13 +58,21 @@ const Upload = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/v1/upload/getSubjects');
+        const res = await fetch('http://localhost:8000/api/v1/upload/getSubjects',{
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+        });
+        
         if (!res.ok) {
           throw new Error('Failed to fetch Subjectsss');
         }
         const data = await res.json();
         console.log(data)
-        setUsers(data);
+        setUsers(data?.data);
+        console.log(users);
       } catch (err) {
         setError(err.message);
       } finally {
