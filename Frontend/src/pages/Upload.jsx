@@ -18,7 +18,7 @@ const Upload = () => {
   const [user_sub, setUser_sub] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [day_sub , setDay_sub] = useState({
+  const [day_sub, setDay_sub] = useState({
     monday: [],
     tuesday: [],
     wednesday: [],
@@ -30,19 +30,19 @@ const Upload = () => {
 
   const formSubmit = async (data) => {
     try {
-       if (data.target_attendance === "") {
-      data.target_attendance = 75;
-    }
-       if (data.present === "") {
-      data.present = 0;
-    }
-       if (data.absent === "") {
-      data.absent = 0;
-    }
-       if (data.cancelled === "") {
-      data.cancelled = 0;
-    }
-        console.log(data);
+      if (data.target_attendance === "") {
+        data.target_attendance = 75;
+      }
+      if (data.present === "") {
+        data.present = 0;
+      }
+      if (data.absent === "") {
+        data.absent = 0;
+      }
+      if (data.cancelled === "") {
+        data.cancelled = 0;
+      }
+      console.log(data);
 
       const res = await fetch("http://localhost:8000/api/v1/upload/add", {
         method: "POST",
@@ -69,14 +69,14 @@ const Upload = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:8000/api/v1/upload/getSubjects',{
+        const res = await fetch('http://localhost:8000/api/v1/upload/getSubjects', {
           method: 'GET',
           headers: {
             "Content-Type": "application/json",
           },
           credentials: 'include',
         });
-        
+
         if (!res.ok) {
           throw new Error('Failed to fetch Subjectsss');
         }
@@ -84,24 +84,24 @@ const Upload = () => {
         console.log("Fetched data:", data);
         data = data.data;
         // console.log("Fetched data:", data);
-        let unique_subjects=new Set();
+        let unique_subjects = new Set();
         let subjects = [];
         for (let day of weekdays) {
-          day=day.toLowerCase()
+          day = day.toLowerCase()
           // console.log("Day:", day);
           let weekday_sub = data[day];
-          let day_sub_name= weekday_sub.map((sub) => sub.subjectId.name);
+          let day_sub_name = weekday_sub.map((sub) => sub.subjectId.name);
           // console.log(day_sub_name)
           setDay_sub((prev) => ({ ...prev, [day]: day_sub_name }));
-          console.log(day_sub)
-          
+          // console.log(day_sub)
+
           for (let subject of weekday_sub) {
             subjects.push(subject.subjectId.name)
           }
           // console.log("Subjects:", subjects);
           subjects.forEach(element => unique_subjects.add(element));
         }
-        console.log(day_sub);
+        // console.log(day_sub);
         setUser_sub([...unique_subjects])
       } catch (err) {
         setError(err.message);
@@ -111,6 +111,10 @@ const Upload = () => {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    console.log("day Subjects:", day_sub);
+  }, [day_sub]);
 
   // if (loading) return <p>Loading...</p>;
   // if (error) return <p>Error: {error}</p>;
@@ -141,11 +145,11 @@ const Upload = () => {
                   <span className="inline-block mb-1">Name:</span>
                   <input
                     type="text"
-                    className="bg-slate-100 p-2 rounded-lg dark:bg-color_button placeholder-text-gray-400 dark:text-white font-normal"
+                    className="bg-slate-100 p-2 rounded-lg dark:bg-color_button placeholder-gray-600 dark:text-white font-normal"
                     placeholder="Name of subject"
                     {...register("sub_name", {
-                      required: { value: true, message: "Field is required" }, 
-                      
+                      required: { value: true, message: "Field is required" },
+
                     })}
                   />
                 </div>
@@ -155,7 +159,7 @@ const Upload = () => {
                   <span className="inline-block mb-1">Subject Code: </span>
                   <input
                     type="text"
-                    className="p-2 rounded-lg dark:bg-color_button placeholder-text-gray-400 dark:text-white "
+                    className="p-2 rounded-lg dark:bg-color_button placeholder-gray-600 dark:text-white "
                     placeholder="Code of subject "
                     {...register("sub_code", { required: true })}
                   />
@@ -171,12 +175,12 @@ const Upload = () => {
                     {...register("target_attendance", {
                       // required: { value: false, message: "Field is required" },
                       defaultValue: "75",
-                      
+
                     })}
                     aria-describedby="helper-text-explanation"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-color_button dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="bg-gray-50 border  text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-color_button  dark:placeholder-gray-600 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="75"
-                    // required
+                  // required
                   />
                 </div>
               </div>
@@ -198,8 +202,8 @@ const Upload = () => {
                       />
                       <label
                         htmlFor={day.toLowerCase()}
-                        className="flex items-center text-center justify-evenly w-full p-1 text-gray-200 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 peer-checked:border-blue-600 dark:peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 
-                        dark:peer-checked:bg-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:bg-color_button dark:hover:bg-gray-700"
+                        className="flex items-center text-center justify-evenly w-full p-1 text-gray-600 bg-white border-2 border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300  peer-checked:border-blue-600 dark:peer-checked:border-blue-600 hover:text-gray-600 dark:peer-checked:text-gray-300 peer-checked:text-gray-600 
+                        dark:peer-checked:bg-gray-600 hover:bg-gray-50 dark:text-gray-600 dark:bg-color_button dark:hover:bg-gray-700"
                       >
                         <div className="block">
                           <div className="w-full text-m font-semibold">
@@ -249,11 +253,12 @@ const Upload = () => {
             Your Subjects :
           </h1>
           <div>
-            <ul className="flex contain-content flex-wrap gap-1 p-2.5 ">
+            <ul className="flex contain-content flex-wrap gap-2 p-2.5 ">
               {user_sub.map((subject) => (
                 <li
                   key={subject}
-                  className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                  className="focus:outline-none text-white bg-blue_site hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-blue_site dark:hover:bg-purple-700 dark:focus:ring-purple-900 "
+
                 >
                   {subject}
                 </li>
@@ -264,31 +269,25 @@ const Upload = () => {
       </div>
       <div className="m-2 p-3 rounded-xl bg-card_bg shadow-card_shadow">
         <h1 className="p-3 text-center text-2xl font-bold"> Time Table :</h1>
-        <div className="flex gap-1.5 justify-evenly">
-          <div className="Time_table">
-            <div>
-              <h1>Monday:</h1>
-              <ul className="flex contain-content flex-wrap gap-1 p-2.5 ">
-
-                {/* {users.days.map((day) => (
-                  <li
-                    key={day}
-                    className="text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+        <div className="flex gap-1.5 justify-evenly ">
+          {weekdays.map((day, index) => (
+            <div key={index} className="Time_table overflow-y-scroll">
+              <div>
+                <h1 className="text-lg font-bold capitalize ">{day}:</h1>
+                {/* <div className=" "> */}
+                <ul className="flex contain-content flex-wrap gap-1 p-2.5 mt-3">
+                  {(day_sub[day.toLowerCase()] || []).map((subject) => (<li
+                    key={subject}
+                    className="focus:outline-none w-full text-white bg-blue_site hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-blue_site dark:hover:bg-purple-700 dark:focus:ring-purple-900 "
                   >
-                    if (day=="Monday") {
-                      {day}
-                    }
+                    {subject}
                   </li>
-                ))} */}
-              </ul>
+                  ))}
+                </ul>
+                {/* </div> */}
+              </div>
             </div>
-          </div>
-          <div className="Time_table">Tuesday</div>
-          <div className="Time_table">wednesday</div>
-          <div className="Time_table">thrusday</div>
-          <div className="Time_table">friday</div>
-          <div className="Time_table">saturday</div>
-          <div className="Time_table">sunday</div>
+          ))}
         </div>
       </div>
     </div>

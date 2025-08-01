@@ -1,5 +1,14 @@
 import { NavLink } from 'react-router-dom';
 import React from 'react';
+import profile from '../assets/profile.png';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Navbar() {
   const navLinkClass = ({ isActive }) =>
@@ -8,14 +17,14 @@ export default function Navbar() {
       : 'text-gray-700 hover:text-blue-700';
   
   return (
-    <div className='bg-gray-200 grid grid-cols-24 grid-rows-1 gap-4 p-5 sticky top-0 z-20'>
-      <div className='col-span-2 col-start-2 col-end-8 justify-self-auto'>
+    <div className='bg-gray-200 grid grid-cols-24 grid-rows-1 gap-4 p-4 sticky top-0 z-20'>
+      <div className='col-span-2 col-start-2 col-end-8 justify-self-auto flex items-center'>
         <NavLink to='/' className='font-bold'>
           <h1>Hq Attendance Manager</h1>
         </NavLink>
       </div>
 
-      <ul className='flex justify-between col-start-9 col-end-18 font-jetbrain font-normal w-full'>
+      <ul className='flex justify-between col-start-9 col-end-18 font-jetbrain font-normal w-full items-center'>
         <NavLink to='/' className={navLinkClass}>
           <li>Home</li>
         </NavLink>
@@ -40,6 +49,20 @@ export default function Navbar() {
           <li>Dashboard</li>
         </NavLink>
       </ul>
+      <div className='col-start-23 w-8'>
+        <DropdownMenu>
+  <DropdownMenuTrigger asChild><img src={profile}></img></DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem>Profile</DropdownMenuItem>
+    <DropdownMenuItem>Billing</DropdownMenuItem>
+    <DropdownMenuItem>Team</DropdownMenuItem>
+    <DropdownMenuItem>Subscription</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+        
+      </div>
     </div>
   );
 }

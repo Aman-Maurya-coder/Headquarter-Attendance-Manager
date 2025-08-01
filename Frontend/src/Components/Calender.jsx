@@ -6,18 +6,11 @@ function Calender() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center">
        <Calendar
-    mode="single"
-    selected={date}
-    onSelect={setDate}
-    className="rounded-lg border"
-  />
-
-  <CalendarDayButton
-  mode="single"
-    selected={date}
-    onSelect={setDate}
-    className="rounded-lg border"
-  />
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-lg border"
+        />
     </div>
   )
 }
