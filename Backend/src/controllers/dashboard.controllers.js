@@ -19,7 +19,7 @@ export const getDateData = asyncHandler(async (req, res) => {
     // console.log(day , date);
     
     try{
-        const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId', 'name code').lean();
+        const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId', 'name subjCode').lean();
         if (attendance) {
             const subjects_attendance = attendance?.subjects_attendance;
             console.log(subjects_attendance);

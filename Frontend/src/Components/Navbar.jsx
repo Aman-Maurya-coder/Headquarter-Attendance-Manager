@@ -13,8 +13,8 @@ import {
 export default function Navbar() {
   const navLinkClass = ({ isActive }) =>
     isActive
-      ? 'text-blue-600 font-semibold hover:text-blue-700'
-      : 'text-gray-200 hover:text-blue-700';
+      ? 'text-blue-600 font-semibold hover:transition duration-300 hover:text-blue-700'
+      : 'text-gray-200 hover:text-blue-700 hover:transition duration-300';
 
   return (
     <div className='bg-black grid grid-cols-24 grid-rows-1 gap-4 p-4 sticky top-0 z-20'>
