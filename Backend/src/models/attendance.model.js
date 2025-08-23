@@ -2,9 +2,9 @@ import { Schema, model } from "mongoose";
 
 const attendanceSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
     date: { type: Date, required: true },
-    attendance: [
+    subjects_attendance: [
       {
         subjectId: {
           type: Schema.Types.ObjectId,

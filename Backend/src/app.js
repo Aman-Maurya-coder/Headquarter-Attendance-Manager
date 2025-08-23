@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 import userRouter from "./routes/user.routes.js"
 import uploadRouter from "./routes/upload.route.js" 
 import dashboardRouter from "./routes/dashboard.route.js"
+import calenderRouter from "./routes/calender.route.js"
 // import scheduleRouter from "./routes/schedule.routes.js"
 
 const app = express()
@@ -24,6 +25,8 @@ app.use("/api/v1/users",userRouter)
 app.use("/api/v1/upload", uploadRouter) 
 
 app.use("/api/v1/dashboard", dashboardRouter)
+
+app.use("/api/v1/calendar", calenderRouter)
 
 
 

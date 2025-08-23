@@ -62,3 +62,17 @@
           <div className="Time_table">friday</div>
           <div className="Time_table">saturday</div>
           <div className="Time_table">sunday</div>*/}
+
+
+  // DASHBOARD
+  
+          {/* {options.map((option, index) => (
+        <label key={index}>
+          <input
+            type="checkbox"
+            checked={selected === index}
+            onChange={() => setSelected(index)}
+          />
+          {option}
+        </label>
+      ))} */}

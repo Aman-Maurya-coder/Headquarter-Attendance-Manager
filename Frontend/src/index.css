@@ -196,7 +196,12 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
+
+
+  /* body {
+    @apply bg-background text-foreground relative font-sans h-screen overflow-x-hidden placeholder:bg-black;
+    background-color: rgba(0, 0, 0, 0.929);
+    color: white;
+   
+  } */
 }
