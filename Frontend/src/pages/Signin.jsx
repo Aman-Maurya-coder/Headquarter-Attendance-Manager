@@ -46,7 +46,7 @@ const Signin = () => {
 
   return (
     <>
-      <div className="p-3 max-w-lg mx-auto mt-6">
+      <div className="p-3 max-w-lg mx-auto mt-6 text-black">
         <h1 className="text-3xl text-center font-semibold  my-7 ">Sign In</h1>
 
         <form

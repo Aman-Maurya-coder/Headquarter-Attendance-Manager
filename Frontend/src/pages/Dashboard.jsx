@@ -2,13 +2,12 @@ import { useEffect, useState } from "react";
 
 export default function Dashboard() {
    const [dateSubj, setDateSubj] = useState([]);
-   const [statusUpdate, setstatusUpdate] = useState(null); 
+   const [statusUpdate, setstatusUpdate] = useState(null);
 
    useEffect(() => {
       let Cdate = new Date();
-      Cdate.setDate(Cdate.getDate() - 2);
+      Cdate.setDate(Cdate.getDate());
 
-      console.log(Cdate);
       let ddata = { req_date: Cdate };
 
       const fetchData = async () => {
@@ -30,8 +29,7 @@ export default function Dashboard() {
             console.error(err);
          }
       };
-      
-      // console.log(dateSubj);
+
       fetchData();
    }, []);
 
@@ -51,8 +49,8 @@ export default function Dashboard() {
    };
 
    useEffect(() => {
-   console.log("dateSubj updated:", dateSubj);
-}, [dateSubj]);
+      console.log("dateSubj updated:", dateSubj);
+   }, [dateSubj]);
 
    // useEffect → send update whenever statusUpdate changes
    useEffect(() => {
@@ -74,7 +72,6 @@ export default function Dashboard() {
          } catch (err) {
             console.error("❌ Update failed:", err);
          }
-
       };
 
       sendUpdate();
@@ -91,8 +88,10 @@ export default function Dashboard() {
                      key={subjectId.subjCode}
                      className="flex justify-between items-center border-2 border-gray-600 rounded-2xl p-4 bg-[#2A2A2A] hover:bg-gray-700 transition duration-300"
                   >
-                     <h2 className="text-xl font-semibold">{subjectId.name}</h2>
-                     <div className="flex gap-4">
+                     <div className="w-1/3 ">
+                        <h2 className="text-xl font-semibold truncate">{subjectId.name}</h2>
+                     </div>
+                     <div className="flex gap-4 items-center">
                         {/* Present */}
                         <div>
                            <input
@@ -102,14 +101,17 @@ export default function Dashboard() {
                               value="present"
                               checked={status === "present"}
                               onChange={(e) =>
-                                 handleChange(subjectId.subjCode , e.target.value)
+                                 handleChange(subjectId.subjCode, e.target.value)
                               }
                               className="hidden"
                            />
                            <label
                               htmlFor={`${subjectId.subjCode}-present`}
-                              className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${status === "present" ? "bg-green-600" : "hover:bg-gray-600"
-                                 }`}
+                              className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${
+                                 status === "present"
+                                    ? "bg-green-600"
+                                    : "hover:bg-gray-600"
+                              }`}
                            >
                               Present
                            </label>
@@ -130,8 +132,11 @@ export default function Dashboard() {
                            />
                            <label
                               htmlFor={`${subjectId.subjCode}-absent`}
-                              className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${status === "absent" ? "bg-red-600" : "hover:bg-gray-600"
-                                 }`}
+                              className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${
+                                 status === "absent"
+                                    ? "bg-red-600"
+                                    : "hover:bg-gray-600"
+                              }`}
                            >
                               Absent
                            </label>
@@ -152,13 +157,25 @@ export default function Dashboard() {
                            />
                            <label
                               htmlFor={`${subjectId.subjCode}-cancel`}
-                              className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${status === "cancel"
+                              className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${
+                                 status === "cancel"
                                     ? "bg-yellow-600"
                                     : "hover:bg-gray-600"
-                                 }`}
+                              }`}
                            >
                               Cancelled
                            </label>
+                        </div>
+
+                        {/* ✅ Reset button */}
+                        <div>
+                           <button
+                              type="button"
+                              onClick={() => handleChange(subjectId.subjCode, "pending")}
+                              className="border-2 border-gray-600 rounded-lg p-2 cursor-pointer hover:bg-gray-600"
+                           >
+                              Reset
+                           </button>
                         </div>
                      </div>
                   </div>

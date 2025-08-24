@@ -88,7 +88,7 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
     if (!req_date) {
         throw new ApiError(400, "Date is required.");
     }
-    if (!subj_status || !['present', 'absent', 'cancel'].includes(subj_status)) {
+    if (!subj_status || !['present', 'absent', 'cancel', 'pending'].includes(subj_status)) {
         throw new ApiError(501, "Valid status is required (present, absent, cancel).");
     }
     const date = new Date(req_date);
