@@ -22,7 +22,7 @@ export const getDateData = asyncHandler(async (req, res) => {
         const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId', 'name subjCode').lean();
         if (attendance) {
             const subjects_attendance = attendance?.subjects_attendance;
-            console.log(subjects_attendance);
+            // console.log(subjects_attendance);
             if (subjects_attendance) {
                 return res.status(200).json({
                     status: 200,
@@ -54,19 +54,42 @@ export const getDateData = asyncHandler(async (req, res) => {
         }
         // console.log(currentDaySubjects);
         const attendanceEntries = currentDaySubjects.map(sub => ({
-            subjectId: sub.subjectId._id,
+            subjectId: sub.subjectId,
             status: "pending"
         }));
-        const newAttendance = new Attendance({
-            user_id: userId,
-            date: date.toISOString().split('T')[0],
-            subjects_attendance: attendanceEntries
-        });
+        // console.log("Attendance Entries", attendanceEntries);
         try{
-            await newAttendance.save();
+            const newAttendance = await Attendance.findOneAndUpdate(
+                { user_id: userId, date: date.toISOString().split('T')[0] },
+                {
+                    user_id: userId,
+                    date: date.toISOString().split('T')[0], // Store date in YYYY-MM-DD format
+                    subjects_attendance: attendanceEntries
+                },
+                { 
+                    new: true, 
+                    upsert: true,
+                    setDefaultsOnInsert: true
+                }
+            ).populate('subjects_attendance.subjectId', 'name subjCode').lean();
         }
         catch(error){
             console.log("Attendance creation error:", error);
+            if (error.code === 11000) {
+                // If duplicate key error, try to fetch the existing record
+                const existingAttendance = await Attendance.findOne({ 
+                    user_id: userId, 
+                    date: date.toISOString().split('T')[0] 
+                }).populate('subjects_attendance.subjectId', 'name subjCode').lean();
+                
+                if (existingAttendance) {
+                    return res.status(200).json({
+                        status: 200,
+                        message: "Attendance data fetched successfully",
+                        data: existingAttendance.subjects_attendance || [],
+                    });
+                }
+            }
             throw new ApiError(514, "Failed to create attendance record.");
         }
         res.status(200).json({
@@ -96,20 +119,23 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
     if (!subject_id) {
         throw new ApiError(505, "Subject ID is required.");
     }
-    const subject = await Subject.findOne({ _id: subject_id, user_id: userId});
+    const subject = await Subject.findOne({ subjCode: subject_id, user_id: userId});
     if (!subject) {
         throw new ApiError(504, "Subject not found.");
     }
     try{
-        const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId', 'name code');
+        const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId', "name subjCode");
         if (!attendance) {
             throw new ApiError(506, "No attendance record found for the given date.");
         }
-        const subjectAttendance = attendance.subjects_attendance.find(sub => sub.subjectId.toString() === subject_id);
+        console.log("Attendance ", attendance.subjects_attendance[0].subjectId);
+        const subjectAttendance = attendance.subjects_attendance.find(sub => sub.subjectId.subjCode === subject_id);
+        console.log("Subject Attendance", subjectAttendance);
         if (!subjectAttendance) {
             throw new ApiError(507, "Subject not found in attendance record for the given date.");
         }
         subjectAttendance.status = subj_status;
+        console.log("Updated Subject Attendance", subjectAttendance);
         await attendance.save();
         res.status(200).json({
             status: 200,
@@ -117,6 +143,7 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
             data: subjectAttendance,
         });
     } catch (error) {
+        console.log(error);
         throw new ApiError(513, "Subject attendance update failed.");
     }
 
