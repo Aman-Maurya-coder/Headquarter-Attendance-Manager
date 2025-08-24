@@ -30,14 +30,15 @@ export default function Dashboard() {
             console.error(err);
          }
       };
-
+      
+      // console.log(dateSubj);
       fetchData();
    }, []);
 
    const handleChange = (subjectId, value) => {
       setDateSubj((prev) =>
          prev.map((sub) =>
-            sub.subjectId._id === subjectId ? { ...sub, status: value } : sub
+            sub.subjectId.subjCode === subjectId ? { ...sub, status: value } : sub
          )
       );
 
@@ -48,6 +49,10 @@ export default function Dashboard() {
          req_date: new Date(),
       });
    };
+
+   useEffect(() => {
+   console.log("dateSubj updated:", dateSubj);
+}, [dateSubj]);
 
    // useEffect → send update whenever statusUpdate changes
    useEffect(() => {
@@ -83,7 +88,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 grid-rows-5 gap-4 items-center m-3 ">
                {dateSubj.map(({ subjectId, status }) => (
                   <div
-                     key={subjectId._id}
+                     key={subjectId.subjCode}
                      className="flex justify-between items-center border-2 border-gray-600 rounded-2xl p-4 bg-[#2A2A2A] hover:bg-gray-700 transition duration-300"
                   >
                      <h2 className="text-xl font-semibold">{subjectId.name}</h2>
@@ -92,17 +97,17 @@ export default function Dashboard() {
                         <div>
                            <input
                               type="radio"
-                              id={`${subjectId._id}-present`}
-                              name={subjectId._id}
+                              id={`${subjectId.subjCode}-present`}
+                              name={subjectId.subjCode}
                               value="present"
                               checked={status === "present"}
                               onChange={(e) =>
-                                 handleChange(subjectId._id, e.target.value)
+                                 handleChange(subjectId.subjCode , e.target.value)
                               }
                               className="hidden"
                            />
                            <label
-                              htmlFor={`${subjectId._id}-present`}
+                              htmlFor={`${subjectId.subjCode}-present`}
                               className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${status === "present" ? "bg-green-600" : "hover:bg-gray-600"
                                  }`}
                            >
@@ -114,17 +119,17 @@ export default function Dashboard() {
                         <div>
                            <input
                               type="radio"
-                              id={`${subjectId._id}-absent`}
-                              name={subjectId._id}
+                              id={`${subjectId.subjCode}-absent`}
+                              name={subjectId.subjCode}
                               value="absent"
                               checked={status === "absent"}
                               onChange={(e) =>
-                                 handleChange(subjectId._id, e.target.value)
+                                 handleChange(subjectId.subjCode, e.target.value)
                               }
                               className="hidden"
                            />
                            <label
-                              htmlFor={`${subjectId._id}-absent`}
+                              htmlFor={`${subjectId.subjCode}-absent`}
                               className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${status === "absent" ? "bg-red-600" : "hover:bg-gray-600"
                                  }`}
                            >
@@ -136,17 +141,17 @@ export default function Dashboard() {
                         <div>
                            <input
                               type="radio"
-                              id={`${subjectId._id}-cancel`}
-                              name={subjectId._id}
+                              id={`${subjectId.subjCode}-cancel`}
+                              name={subjectId.subjCode}
                               value="cancel"
                               checked={status === "cancel"}
                               onChange={(e) =>
-                                 handleChange(subjectId._id, e.target.value)
+                                 handleChange(subjectId.subjCode, e.target.value)
                               }
                               className="hidden"
                            />
                            <label
-                              htmlFor={`${subjectId._id}-cancel`}
+                              htmlFor={`${subjectId.subjCode}-cancel`}
                               className={`me-2 border-2 border-gray-600 rounded-lg p-2 cursor-pointer ${status === "cancel"
                                     ? "bg-yellow-600"
                                     : "hover:bg-gray-600"
