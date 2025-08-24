@@ -83,9 +83,8 @@ export const getDateData = asyncHandler(async (req, res) => {
 
 export const subjectWiseAttendance = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const subject_id = req.params.subjectId;
-    const req_date = req.params.curr_date;
-    const subj_status = req.params.status; // present or absent or cancel
+    const { subject_id , req_date ,subj_status} = req.body;
+
     if (!req_date) {
         throw new ApiError(400, "Date is required.");
     }
@@ -118,7 +117,7 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
             data: subjectAttendance,
         });
     } catch (error) {
-        throw new ApiError(508, "Subject attendance update failed.");
+        throw new ApiError(513, "Subject attendance update failed.");
     }
 
 
