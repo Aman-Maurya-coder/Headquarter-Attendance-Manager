@@ -149,3 +149,19 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
 
 
 });
+
+export const subjectsData = asyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    const subjects = await Subject.find({
+        user_id: userId
+    })
+    if (!subjects){
+        throw new ApiError(404, "No subjects found for this user.");
+    }
+    res.status(200).json({
+        status: 200,
+        message: "Subjects fetched successfully",
+        data: subjects,
+    });
+})
