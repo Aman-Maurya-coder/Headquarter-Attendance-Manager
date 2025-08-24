@@ -135,6 +135,7 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
             throw new ApiError(507, "Subject not found in attendance record for the given date.");
         }
         subjectAttendance.status = subj_status;
+        console.log("Updated Subject Attendance", subjectAttendance);
         await attendance.save();
         res.status(200).json({
             status: 200,
