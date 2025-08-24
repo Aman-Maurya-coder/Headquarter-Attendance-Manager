@@ -6,7 +6,7 @@ export default function Dashboard() {
 
    useEffect(() => {
       let Cdate = new Date();
-      Cdate.setDate(Cdate.getDate() - 2);
+      Cdate.setDate(Cdate.getDate());
 
       console.log(Cdate);
       let ddata = { req_date: Cdate };

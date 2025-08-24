@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { Subject } from "./subject.model.js";
 
 const attendanceSchema = new Schema(
   {
@@ -24,18 +25,18 @@ const attendanceSchema = new Schema(
   }
 );
 
-attendanceSchema.index({ userId: 1, date: 1 }, { unique: true });
+attendanceSchema.index({ user_id: 1, date: 1 }, { unique: true });
 attendanceSchema.index({ "attendance.subjectId": 1 });
 attendanceSchema.index({
-  userId: 1,
-  "attendance.subjectId": 1,
-  "attendance.status": 1,
+  user_id: 1,
+  "subjects_attendance.subjectId": 1,
+  "subjects_attendance.status": 1,
 });
 
 attendanceSchema.post("save", async function (doc) {
   try {
     // Iterate over each attendance record in the document
-    for (const entry of doc.attendance) {
+    for (const entry of doc.subjects_attendance) {
       if (!entry.subjectId) continue;
 
       // Increment totalClasses
