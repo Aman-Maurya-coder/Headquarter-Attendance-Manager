@@ -21,6 +21,7 @@ const subjectSchema = new Schema({
     totalClasses: { type: Number, default: 0 },         // total times class happened
     attendedClasses: { type: Number, default: 0 },     // total times user was present
     missedClasses: { type: Number, default: 0 },       // total times user was absent
+    cancelledClasses: { type: Number, default: 0 },    // total times class was cancelled
     targetAttendance: {
         type: Number,
         default: 75,

@@ -68,7 +68,7 @@ export const getDateData = asyncHandler(async (req, res) => {
                 },
                 { 
                     new: true, 
-                    upsert: true,
+                    upsert: true, 
                     setDefaultsOnInsert: true
                 }
             ).populate('subjects_attendance.subjectId', 'name subjCode').lean();
@@ -134,6 +134,41 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
         if (!subjectAttendance) {
             throw new ApiError(507, "Subject not found in attendance record for the given date.");
         }
+        if (subjectAttendance.status === subj_status ){
+            res.status(200).json({
+                status: 200,
+                message: "Subject attendance already marked as " + subj_status,
+                data: subjectAttendance,
+            })
+        }
+        else if (subjectAttendance.status === "present" && subj_status === "absent"){
+            subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
+            subject.missedClasses += 1;
+        }
+        else if (subjectAttendance.status === "present" && subj_status === "cancel"){
+            subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
+            subject.cancelledClasses += 1;
+            subject.totalClasses -= 1;
+        }
+        else if (subjectAttendance.status === "absent" && subj_status === "present"){
+            subject.missedClasses = Math.max(0, subject.missedClasses - 1);
+            subject.attendedClasses += 1;
+        }
+        else if (subjectAttendance.status === "absent" && subj_status === "cancel"){
+            subject.missedClasses = Math.max(0, subject.missedClasses - 1);
+            subject.cancelledClasses += 1;
+            subject.totalClasses -= 1;
+        }
+        else if (subjectAttendance.status === "cancel" && subj_status === "present"){
+            subject.cancelledClasses = Math.max(0, subject.cancelledClasses - 1);
+            subject.attendedClasses += 1;
+            subject.totalClasses += 1;
+        }
+        else if (subjectAttendance.status === "cancel" && subj_status === "absent"){
+            subject.cancelledClasses = Math.max(0, subject.cancelledClasses - 1);
+            subject.missedClasses += 1;
+            subject.totalClasses += 1;
+        }
         subjectAttendance.status = subj_status;
         console.log("Updated Subject Attendance", subjectAttendance);
         await attendance.save();
@@ -149,6 +184,29 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
 
 
 });
+
+// export const extraClass = asyncHandler(async (req, res) => {
+//     const userId = req.user._id;
+//     const { subject_id , req_date ,subj_status} = req.body;
+//     if (!req_date) {
+//         throw new ApiError(400, "Date is required.");
+//     }
+//     if (!subj_status || !['present', 'absent', 'cancel', 'pending'].includes(subj_status)) {
+//         throw new ApiError(501, "Valid status is required (present, absent, cancel).");
+//     }
+//     const date = new Date(req_date);
+//     const day = days[date.getDay()]; // 0-6 (0 is Sunday, 1 is Monday, etc.)
+//     if (!subject_id) {
+//         throw new ApiError(505, "Subject ID is required.");
+//     }
+//     const subject = await Subject.findOne({ subjCode: subject_id, user_id: userId});
+//     if (!subject) {
+//         throw new ApiError(504, "Subject not found.");
+//     }
+//     try{
+//         const newAttendance = 
+//     }
+// })
 
 export const subjectsData = asyncHandler(async (req, res) => {
     const userId = req.user._id;
