@@ -120,13 +120,13 @@ const Upload = () => {
   // if (error) return <p>Error: {error}</p>;
 
   return (
-    <div className="font-space font-semibold">
+    <div className="font-space font-semibold bg-black">
       {" "}
       {/* div for the whole page */}
       <div className="flex ">
         {" "}
         {/* div for addSub and YourSub */}
-        <div className="  w-1/2 m-3 rounded-2xl bg-card_bg shadow-card_shadow ">
+        <div className="  w-1/2 m-3 rounded-2xl bg-gray-950 shadow-card_shadow   ">
           {" "}
           {/* div for addSubject */}
           <h1 className="font-medium text-3xl text-center mb-6 mt-6 text-blue_site " style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
@@ -145,7 +145,7 @@ const Upload = () => {
                   <span className="inline-block mb-1">Name:</span>
                   <input
                     type="text"
-                    className="bg-slate-100 p-2 rounded-lg dark:bg-color_button placeholder-gray-600 dark:text-white font-normal"
+                    className="bg-slate-100 p-2 rounded-lg dark:bg-color_button placeholder-gray-600 dark:text-gray-700 font-normal"
                     placeholder="Name of subject"
                     {...register("sub_name", {
                       required: { value: true, message: "Field is required" },
@@ -159,7 +159,7 @@ const Upload = () => {
                   <span className="inline-block mb-1">Subject Code: </span>
                   <input
                     type="text"
-                    className="p-2 rounded-lg dark:bg-color_button placeholder-gray-600 dark:text-white "
+                    className="p-2 rounded-lg dark:bg-color_button placeholder-gray-600 dark:text-gray-700 "
                     placeholder="Code of subject "
                     {...register("sub_code", { required: true })}
                   />
@@ -248,7 +248,7 @@ const Upload = () => {
           </form>
           {/* {errors.sub_name && <div className="text-red-500 p-0 my-0">{errors.sub_name.message} </div>} */}
         </div>
-        <div className=" w-1/2 m-3 rounded-2xl bg-card_bg shadow-card_shadow">
+        <div className=" w-1/2 m-3 rounded-2xl bg-gray-950 shadow-card_shadow">
           <h1 className="font-medium text-3xl text-center mt-6 mb-4">
             Your Subjects :
           </h1>
@@ -267,18 +267,18 @@ const Upload = () => {
           </div>
         </div>
       </div>
-      <div className="m-2 p-3 rounded-xl bg-card_bg shadow-card_shadow">
-        <h1 className="p-3 text-center text-2xl font-bold"> Time Table :</h1>
+      <div className="m-2 p-3 rounded-xl bg-black shadow-card_shadow">
+        <h1 className="p-3 text-center text-2xl font-bold bg-gray-950"> Time Table :</h1>
         <div className="flex gap-1.5 justify-evenly ">
           {weekdays.map((day, index) => (
-            <div key={index} className="Time_table overflow-y-scroll">
-              <div>
+            <div key={index} className="Time_table overflow-y-scroll bg-gray-900  ">
+              <div className="">
                 <h1 className="text-lg font-bold capitalize ">{day}:</h1>
                 {/* <div className=" "> */}
                 <ul className="flex contain-content flex-wrap gap-1 p-2.5 mt-3">
                   {(day_sub[day.toLowerCase()] || []).map((subject) => (<li
                     key={subject}
-                    className="focus:outline-none w-full text-white bg-blue_site hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-blue_site dark:hover:bg-purple-700 dark:focus:ring-purple-900 "
+                    className="focus:outline-none w-full text-white bg-blue_site hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 truncate dark:bg-blue_site dark:hover:bg-purple-700 dark:focus:ring-purple-900 "
                   >
                     {subject}
                   </li>
