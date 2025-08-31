@@ -22,7 +22,7 @@ export const getDateData = asyncHandler(async (req, res) => {
         const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId', 'name subjCode').lean();
         if (attendance) {
             const subjects_attendance = attendance?.subjects_attendance;
-            // console.log(subjects_attendance);
+            console.log(subjects_attendance);
             if (subjects_attendance) {
                 return res.status(200).json({
                     status: 200,
@@ -39,7 +39,7 @@ export const getDateData = asyncHandler(async (req, res) => {
             path: 'timetable.monday.subjectId timetable.tuesday.subjectId timetable.wednesday.subjectId timetable.thursday.subjectId timetable.friday.subjectId timetable.saturday.subjectId timetable.sunday.subjectId',
             model: 'Subject'
         }).lean();
-        // console.log("Schedule",schedule);
+        console.log("Schedule",schedule);
         if (!schedule) {
             throw new ApiError(511, "No schedule available.");
         }
@@ -169,6 +169,7 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
             subject.missedClasses += 1;
             subject.totalClasses += 1;
         }
+        await subject.save();
         subjectAttendance.status = subj_status;
         console.log("Updated Subject Attendance", subjectAttendance);
         await attendance.save();

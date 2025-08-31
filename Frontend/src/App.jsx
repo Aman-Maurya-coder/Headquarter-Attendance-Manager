@@ -1,40 +1,72 @@
-import { useState } from "react";
-import React from "react";
-import "./App.css";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+// Frontend/src/App.jsx
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
-import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
-import Navbar from "./Components/Navbar";
-import Report from "./pages/Report";
-import Upload from "./pages/Upload";
+import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
-import HomeNavbar from "./Components/HomeNavbar"; // Create this component for Home page
-
-function AppContent() {
-  const location = useLocation();
-  // Show HomeNavbar only on home page, Navbar on all others
-  const isHome = location.pathname === "/";
-
-  return (
-    <>
-      {isHome ? <HomeNavbar /> : <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/Signup" element={<Signup />} />
-        <Route path="/Signin" element={<Signin />} />
-        <Route path="/Report" element={<Report />} />
-        <Route path="/Upload" element={<Upload />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
-      </Routes>
-    </>
-  );
-}
+import Upload from "./pages/Upload";
+import Report from "./pages/Report";
+import ProtectedLayout from "./Components/ProtectedLayout";
+import { SignedIn, SignedOut } from "@clerk/clerk-react";
 
 function App() {
   return (
     <BrowserRouter>
-      <AppContent />
+      <Routes>
+        {/* --- Public Routes --- */}
+        <Route path="/" element={<Home />} />
+
+        {/* Signin: redirect if already signed in */}
+        <Route
+          path="/signin/*"
+          element={
+            <>
+              <SignedIn>
+                <Navigate to="/dashboard" replace />
+              </SignedIn>
+              <SignedOut>
+                <Signin />
+              </SignedOut>
+            </>
+          }
+        />
+
+        {/* Signup: redirect if already signed in */}
+        <Route
+          path="/signup/*"
+          element={
+            <>
+              <SignedIn>
+                <Navigate to="/dashboard" replace />
+              </SignedIn>
+              <SignedOut>
+                <Signup />
+              </SignedOut>
+            </>
+          }
+        />
+
+        {/* --- Protected Routes --- */}
+        <Route
+          element={
+            <>
+              <SignedIn>
+                <ProtectedLayout />
+              </SignedIn>
+              <SignedOut>
+                <Navigate to="/" replace />
+              </SignedOut>
+            </>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/upload" element={<Upload />} />
+          <Route path="/report" element={<Report />} />
+        </Route>
+
+        {/* --- Fallback for unknown routes --- */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -53,7 +53,9 @@ export const addSubject = asyncHandler(async (req, res) => {
         user_id,
       name: sub_name.toLowerCase(),
       subjCode: sub_code.toLowerCase(),
-      totalClasses: present + absent + cancelled,
+      totalClasses: present + absent ,
+      missedClasses : absent ,
+      cancelledClasses:cancel,
       attendedClasses: present,
     });
     // console.log("Subject created:", subject);

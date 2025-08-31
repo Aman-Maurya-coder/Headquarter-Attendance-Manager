@@ -265,7 +265,7 @@ export default function Dashboard() {
                            </div>
                            <div className="row-start-2"><h4>Present : {subject.attendedClasses}</h4></div>
                            <div className="row-start-2"><h4>Absent : {subject.missedClasses}</h4></div>
-                           <div className="row-start-3"><h4>Cancel : {subject.attendedClasses - subject.missedClasses}</h4></div>
+                           <div className="row-start-3"><h4>Cancel : {subject.cancelledClasses}</h4></div>
                            <div className="row-start-3"><h4>Total : {subject.totalClasses}</h4></div>
                         </div>
                      </div>
