@@ -33,23 +33,22 @@ attendanceSchema.index({
   "subjects_attendance.status": 1,
 });
 
-attendanceSchema.post("save", async function (doc) {
-  try {
-    // Iterate over each attendance record in the document
-    for (const entry of doc.subjects_attendance) {
-      if (!entry.subjectId) continue;
+// attendanceSchema.post("save", async function (doc) {
+//   try {
+//     // Iterate over each attendance record in the document
+//     for (const entry of doc.subjects_attendance) {
+//       if (!entry.subjectId) continue;
 
-      // Increment totalClasses
-      await Subject.findByIdAndUpdate(entry.subjectId, {
-        $inc: {
-          totalClasses: 1,
-          attendedClasses: entry.status === "present" ? 1 : 0,
-        },
-      });
-    }
-  } catch (err) {
-    console.error("Error updating subject attendance:", err);
-  }
-});
+//       // Increment totalClasses
+//       await Subject.findByIdAndUpdate(entry.subjectId, {
+//         $inc: {
+//           totalClasses: attendedClasses + missedClasses,
+//         },
+//       });
+//     }
+//   } catch (err) {
+//     console.error("Error updating subject attendance:", err);
+//   }
+// });
 
 export const Attendance = model("Attendance", attendanceSchema);

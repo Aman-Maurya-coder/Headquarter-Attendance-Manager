@@ -53,7 +53,9 @@ export const addSubject = asyncHandler(async (req, res) => {
         user_id,
       name: sub_name.toLowerCase(),
       subjCode: sub_code.toLowerCase(),
-      totalClasses: present + absent + cancelled,
+      totalClasses: present + absent,
+      missedClasses: absent,
+      cancelledClasses: cancelled,
       attendedClasses: present,
     });
     // console.log("Subject created:", subject);
@@ -134,7 +136,7 @@ export const getSubjects = asyncHandler(async (req, res) => {
     }).lean();
   console.log(schedule);
 
-  const resp = schedule.timetable || {};
+  const resp = schedule?.timetable || {};
 
   res.status(200).json({
     status: 200,
