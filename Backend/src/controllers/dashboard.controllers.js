@@ -17,41 +17,58 @@ export const getDateData = asyncHandler(async (req, res) => {
     let date = new Date(req_date);
     let day = days[date.getDay()]; // 0-6 (0 is Sunday, 1 is Monday, etc.)
     // console.log(day , date);
+    let timetable;
+    const schedule = await Schedule.findOne({ user_id: userId }).populate({
+        path: 'timetable.monday.subjectId timetable.tuesday.subjectId timetable.wednesday.subjectId timetable.thursday.subjectId timetable.friday.subjectId timetable.saturday.subjectId timetable.sunday.subjectId',
+        model: 'Subject'
+    }).lean();
     
+    if (!schedule) {
+        throw new ApiError(404, "No schedule available for this user.");
+    }
+    timetable = schedule.timetable;
+    if (!timetable) {
+        throw new ApiError(404, "Timetable is empty for this user.");
+    }
+    // const timetable = userSchedule["timetable"];
+    const currentDaySubjects = timetable[day] || [];
     try{
-        const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId', 'name subjCode').lean();
+        const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId').lean();
         if (attendance) {
             const subjects_attendance = attendance?.subjects_attendance;
-            console.log(subjects_attendance);
-            if (subjects_attendance) {
+            // console.log("running")
+            // console.log(subjects_attendance, currentDaySubjects);
+            if (subjects_attendance && subjects_attendance.length === currentDaySubjects.length) {
                 return res.status(200).json({
                     status: 200,
                     message: "Attendance data fetched successfully",
                     data: subjects_attendance || [],
                 });
             }
+            else{
+                const newSubjects = currentDaySubjects.filter((sub) => {
+                    return !subjects_attendance.some((attSub) => attSub.subjectId.subjCode === sub.subjectId.subjCode);
+                })
+                if (newSubjects.length > 0){
+                    const newAttendanceEntries = newSubjects.map(sub => ({
+                        subjectId: sub.subjectId,
+                        status: "pending"
+                    }));
+                    attendance.subjects_attendance.push(...newAttendanceEntries);
+                    await Attendance.updateOne(
+                        { user_id: userId, date: date.toISOString().split('T')[0] },
+                        { subjects_attendance: attendance.subjects_attendance }
+                    );
+                }
+                return res.status(200).json(
+                    new ApiResponse(200, "Attendance data fetched successfully", attendance.subjects_attendance || [])
+                )
+            }
         }
     } catch (error) {
-        throw new ApiError(510, "Attendance fetching failed.");
+        throw new ApiError(510, "Existing Attendance record fetching failed.");
     }
     try{
-        const schedule = await Schedule.findOne({ user_id: userId }).populate({
-            path: 'timetable.monday.subjectId timetable.tuesday.subjectId timetable.wednesday.subjectId timetable.thursday.subjectId timetable.friday.subjectId timetable.saturday.subjectId timetable.sunday.subjectId',
-            model: 'Subject'
-        }).lean();
-        console.log("Schedule",schedule);
-        if (!schedule) {
-            throw new ApiError(511, "No schedule available.");
-        }
-        const resp = schedule.timetable || {};
-        if (!resp) {
-            throw new ApiError(512, "Subjects fetching failed.");
-        }
-        // console.log("timeTable ", resp);
-        const currentDaySubjects = resp[day] || [];
-        if (currentDaySubjects.length === 0) {
-            throw new ApiError(513, "No subjects scheduled for today.");
-        }
         // console.log(currentDaySubjects);
         const attendanceEntries = currentDaySubjects.map(sub => ({
             subjectId: sub.subjectId,
@@ -59,7 +76,7 @@ export const getDateData = asyncHandler(async (req, res) => {
         }));
         // console.log("Attendance Entries", attendanceEntries);
         try{
-            const newAttendance = await Attendance.findOneAndUpdate(
+            await Attendance.findOneAndUpdate(
                 { user_id: userId, date: date.toISOString().split('T')[0] },
                 {
                     user_id: userId,
@@ -92,11 +109,9 @@ export const getDateData = asyncHandler(async (req, res) => {
             }
             throw new ApiError(514, "Failed to create attendance record.");
         }
-        res.status(200).json({
-        status: 200,
-        message: "Subjects fetched successfully",
-        data: currentDaySubjects,
-        });
+        res.status(200).json(
+            new ApiResponse(200, "Attendance data fetched successfully", attendanceEntries || [])
+        );
     }
     catch (error) {
         console.log(error);
@@ -134,40 +149,68 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
         if (!subjectAttendance) {
             throw new ApiError(507, "Subject not found in attendance record for the given date.");
         }
-        if (subjectAttendance.status === subj_status ){
-            res.status(200).json({
-                status: 200,
-                message: "Subject attendance already marked as " + subj_status,
-                data: subjectAttendance,
-            })
+        if (subjectAttendance.status === "pending" && subj_status !== "cancel" && subj_status !== "pending"){
+            if (subj_status === "present") {
+                subject.totalClasses += 1;
+                subject.attendedClasses += 1;
+            }
+            else if (subj_status === "absent"){
+                subject.totalClasses += 1;
+                subject.missedClasses += 1;
+            }
         }
-        else if (subjectAttendance.status === "present" && subj_status === "absent"){
-            subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
-            subject.missedClasses += 1;
-        }
-        else if (subjectAttendance.status === "present" && subj_status === "cancel"){
-            subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
+        else if (subjectAttendance.status === "pending" && subj_status === "cancel"){
             subject.cancelledClasses += 1;
-            subject.totalClasses -= 1;
         }
-        else if (subjectAttendance.status === "absent" && subj_status === "present"){
-            subject.missedClasses = Math.max(0, subject.missedClasses - 1);
-            subject.attendedClasses += 1;
-        }
-        else if (subjectAttendance.status === "absent" && subj_status === "cancel"){
-            subject.missedClasses = Math.max(0, subject.missedClasses - 1);
-            subject.cancelledClasses += 1;
-            subject.totalClasses -= 1;
-        }
-        else if (subjectAttendance.status === "cancel" && subj_status === "present"){
-            subject.cancelledClasses = Math.max(0, subject.cancelledClasses - 1);
-            subject.attendedClasses += 1;
-            subject.totalClasses += 1;
-        }
-        else if (subjectAttendance.status === "cancel" && subj_status === "absent"){
-            subject.cancelledClasses = Math.max(0, subject.cancelledClasses - 1);
-            subject.missedClasses += 1;
-            subject.totalClasses += 1;
+        else{
+            if (subjectAttendance.status === subj_status ){
+                res.status(200).json({
+                    status: 200,
+                    message: "Subject attendance already marked as " + subj_status,
+                    data: subjectAttendance,
+                })
+            }
+            else if (subjectAttendance.status === "present" && subj_status === "absent"){
+                subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
+                subject.missedClasses += 1;
+            }
+            else if (subjectAttendance.status === "present" && subj_status === "cancel"){
+                subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
+                subject.cancelledClasses += 1;
+                subject.totalClasses -= 1;
+            }
+            else if (subjectAttendance.status === "present" && subj_status === "pending"){
+                subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
+                console.log("total classes :", subject.totalClasses);
+                subject.totalClasses = Math.max(0, subject.totalClasses - 1);
+                console.log("total classes :", subject.totalClasses);
+            }
+            else if (subjectAttendance.status === "absent" && subj_status === "present"){
+                subject.missedClasses = Math.max(0, subject.missedClasses - 1);
+                subject.attendedClasses += 1;
+            }
+            else if (subjectAttendance.status === "absent" && subj_status === "cancel"){
+                subject.missedClasses = Math.max(0, subject.missedClasses - 1);
+                subject.cancelledClasses += 1;
+                subject.totalClasses -= 1;
+            }
+            else if (subjectAttendance.status === "absent" && subj_status === "pending"){
+                subject.missedClasses = Math.max(0, subject.missedClasses - 1);
+                subject.totalClasses -= Math.max(0, subject.totalClasses - 1);
+            }
+            else if (subjectAttendance.status === "cancel" && subj_status === "present"){
+                subject.cancelledClasses = Math.max(0, subject.cancelledClasses - 1);
+                subject.attendedClasses += 1;
+                subject.totalClasses += 1;
+            }
+            else if (subjectAttendance.status === "cancel" && subj_status === "absent"){
+                subject.cancelledClasses = Math.max(0, subject.cancelledClasses - 1);
+                subject.missedClasses += 1;
+                subject.totalClasses += 1;
+            }
+            else if (subjectAttendance.status === "cancel" && subj_status === "pending"){
+                subject.cancelledClasses = Math.max(0, subject.cancelledClasses -1);
+            }
         }
         await subject.save();
         subjectAttendance.status = subj_status;
