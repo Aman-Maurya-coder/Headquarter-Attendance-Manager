@@ -2,6 +2,16 @@
 @import "tw-animate-css";
 /* @plugin "@tailwindcss/line-clamp"; */
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 
 /* @custom-variant dark (&:is(.dark *));  */
 

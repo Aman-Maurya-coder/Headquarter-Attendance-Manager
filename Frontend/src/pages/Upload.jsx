@@ -258,7 +258,6 @@ const Upload = () => {
                 <li
                   key={subject}
                   className="focus:outline-none text-white bg-blue_site hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-blue_site dark:hover:bg-purple-700 dark:focus:ring-purple-900 "
-
                 >
                   {subject}
                 </li>
@@ -271,7 +270,7 @@ const Upload = () => {
         <h1 className="p-3 text-center text-2xl font-bold bg-gray-950"> Time Table :</h1>
         <div className="flex gap-1.5 justify-evenly ">
           {weekdays.map((day, index) => (
-            <div key={index} className="Time_table overflow-y-scroll bg-gray-900  ">
+            <div key={index} className="Time_table overflow-y-scroll bg-gray-900  no-scrollbar">
               <div className="">
                 <h1 className="text-lg font-bold capitalize ">{day}:</h1>
                 {/* <div className=" "> */}
