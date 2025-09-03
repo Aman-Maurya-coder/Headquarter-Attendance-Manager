@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { UserButton } from '@clerk/clerk-react';
 
 export default function Navbar() {
   const navLinkClass = ({ isActive }) =>
@@ -63,6 +64,7 @@ export default function Navbar() {
         </DropdownMenu>
 
       </div>
+      <UserButton></UserButton>
     </div>
   );
 }

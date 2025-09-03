@@ -1,8 +1,11 @@
 import express from "express"
 import { dateSubjects } from "../controllers/calender.controllers.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js"
-const calenderRouter = express.Router();
+import { requireAuth, clerkMiddleware } from '@clerk/express'
 
-calenderRouter.route("/date").get(authMiddleware, dateSubjects);
+const calenderRouter = express.Router();
+calenderRouter.use(clerkMiddleware())
+
+calenderRouter.route("/date").get(requireAuth(), dateSubjects);
 
 export default calenderRouter;

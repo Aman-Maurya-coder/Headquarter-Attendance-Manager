@@ -2,6 +2,8 @@ import React from 'react'
 import gradient from '../assets/gradient.png'
 import Spline from '@splinetool/react-spline'
 import { useNavigate } from 'react-router-dom';
+import { SignUp } from '@clerk/clerk-react'
+
 const Home = () => {
       const navigate = useNavigate();
   return (
@@ -16,6 +18,7 @@ const Home = () => {
                         Manage Your Attendance, Smarter.
                     </h1>
         <button onClick={()=>{navigate("/signup")}} className='bg-amber-50 text-black p-3 rounded-2xl w-[10rem] ml-[25%] cursor-pointer '>Get Started </button>
+        {/* <SignUp className='bg-amber-50 text-black p-3 rounded-2xl w-[10rem] ml-[25%] cursor-pointer '>Get Started </SignUp> */}
       </div>
         <Spline className='absolute lg:top-[-8%] top-[-25%] bottom-0 lg:left-[30%] sm:left-[-2%] h-full z-10  ' scene="https://prod.spline.design/UZCnJDawLv5JdULP/scene.splinecode" />
     </main>

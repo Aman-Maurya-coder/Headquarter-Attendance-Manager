@@ -10,6 +10,8 @@ import Report from "./pages/Report";
 import Upload from "./pages/Upload";
 import Dashboard from "./pages/Dashboard";
 import HomeNavbar from "./Components/HomeNavbar"; // Create this component for Home page
+import { SignedIn, SignedOut, SignInButton, UserButton, SignIn, SignUp } from '@clerk/clerk-react'
+
 
 function AppContent() {
   const location = useLocation();
@@ -20,12 +22,12 @@ function AppContent() {
     <>
       {isHome ? <HomeNavbar /> : <Navbar />}
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/Signup" element={<Signup />} />
-        <Route path="/Signin" element={<Signin />} />
-        <Route path="/Report" element={<Report />} />
-        <Route path="/Upload" element={<Upload />} />
-        <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/Signup" element={<Signup />} />
+          <Route path="/Signin" element={<Signin />} />
+          <Route path="/Report" element={<Report />} />
+          <Route path="/Upload" element={<Upload />} />
+          <Route path="/Dashboard" element={<Dashboard />} />
       </Routes>
     </>
   );

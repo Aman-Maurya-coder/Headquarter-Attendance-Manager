@@ -1,15 +1,19 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { User } from "../models/user.model.js";
 import { Schedule } from "../models/schedule.model.js";
 import { Subject } from "../models/subject.model.js";
 import { Attendance } from "../models/attendance.model.js"
+import { getAuth } from "@clerk/express";
 
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 export const getDateData = asyncHandler(async (req, res) => {
     console.log("getDateData" );
-    const userId = req.user._id;
+    const user = await User.findOne({ clerk_id: req.auth().userId });
+    const user_id = user._id;
+    // console.log(userId);
     const { req_date } = req.body;
     if (!req_date) {
         throw new ApiError(400, "Date is required.");
@@ -18,7 +22,7 @@ export const getDateData = asyncHandler(async (req, res) => {
     let day = days[date.getDay()]; // 0-6 (0 is Sunday, 1 is Monday, etc.)
     // console.log(day , date);
     let timetable;
-    const schedule = await Schedule.findOne({ user_id: userId }).populate({
+    const schedule = await Schedule.findOne({ user_id: user_id }).populate({
         path: 'timetable.monday.subjectId timetable.tuesday.subjectId timetable.wednesday.subjectId timetable.thursday.subjectId timetable.friday.subjectId timetable.saturday.subjectId timetable.sunday.subjectId',
         model: 'Subject'
     }).lean();
@@ -33,17 +37,15 @@ export const getDateData = asyncHandler(async (req, res) => {
     // const timetable = userSchedule["timetable"];
     const currentDaySubjects = timetable[day] || [];
     try{
-        const attendance = await Attendance.findOne({ user_id: userId, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId').lean();
+        const attendance = await Attendance.findOne({ user_id: user_id, date: date.toISOString().split('T')[0] }).populate('subjects_attendance.subjectId').lean();
         if (attendance) {
             const subjects_attendance = attendance?.subjects_attendance;
             // console.log("running")
             // console.log(subjects_attendance, currentDaySubjects);
             if (subjects_attendance && subjects_attendance.length === currentDaySubjects.length) {
-                return res.status(200).json({
-                    status: 200,
-                    message: "Attendance data fetched successfully",
-                    data: subjects_attendance || [],
-                });
+                return res.status(200).json(
+                    new ApiResponse(200, subjects_attendance || [],"Attendance data fetched successfully")
+                )
             }
             else{
                 const newSubjects = currentDaySubjects.filter((sub) => {
@@ -56,12 +58,12 @@ export const getDateData = asyncHandler(async (req, res) => {
                     }));
                     attendance.subjects_attendance.push(...newAttendanceEntries);
                     await Attendance.updateOne(
-                        { user_id: userId, date: date.toISOString().split('T')[0] },
+                        { user_id: user_id, date: date.toISOString().split('T')[0] },
                         { subjects_attendance: attendance.subjects_attendance }
                     );
                 }
                 return res.status(200).json(
-                    new ApiResponse(200, "Attendance data fetched successfully", attendance.subjects_attendance || [])
+                    new ApiResponse(200, attendance.subjects_attendance || [],"Attendance data fetched successfully")
                 )
             }
         }
@@ -77,9 +79,9 @@ export const getDateData = asyncHandler(async (req, res) => {
         // console.log("Attendance Entries", attendanceEntries);
         try{
             await Attendance.findOneAndUpdate(
-                { user_id: userId, date: date.toISOString().split('T')[0] },
+                { user_id: user_id, date: date.toISOString().split('T')[0] },
                 {
-                    user_id: userId,
+                    user_id: user_id,
                     date: date.toISOString().split('T')[0], // Store date in YYYY-MM-DD format
                     subjects_attendance: attendanceEntries
                 },
@@ -95,7 +97,7 @@ export const getDateData = asyncHandler(async (req, res) => {
             if (error.code === 11000) {
                 // If duplicate key error, try to fetch the existing record
                 const existingAttendance = await Attendance.findOne({ 
-                    user_id: userId, 
+                    user_id: user_id, 
                     date: date.toISOString().split('T')[0] 
                 }).populate('subjects_attendance.subjectId', 'name subjCode').lean();
                 
@@ -110,7 +112,7 @@ export const getDateData = asyncHandler(async (req, res) => {
             throw new ApiError(514, "Failed to create attendance record.");
         }
         res.status(200).json(
-            new ApiResponse(200, "Attendance data fetched successfully", attendanceEntries || [])
+            new ApiResponse(200, attendanceEntries || [], "Attendance data fetched successfully")
         );
     }
     catch (error) {
@@ -120,7 +122,8 @@ export const getDateData = asyncHandler(async (req, res) => {
 });
 
 export const subjectWiseAttendance = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
+    const user = await User.findOne({ clerk_id: req.auth().userId });
+    const user_id = user._id;
     const { subject_id , req_date ,subj_status} = req.body;
 
     if (!req_date) {
@@ -164,11 +167,14 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
         }
         else{
             if (subjectAttendance.status === subj_status ){
-                res.status(200).json({
-                    status: 200,
-                    message: "Subject attendance already marked as " + subj_status,
-                    data: subjectAttendance,
-                })
+                // res.status(200).json({
+                //     status: 200,
+                //     message: "Subject attendance already marked as " + subj_status,
+                //     data: subjectAttendance,
+                // })
+                res.status(200).json(
+                    new ApiResponse(200, subjectAttendance, "Subject attendance already marked as " + subj_status)
+                )
             }
             else if (subjectAttendance.status === "present" && subj_status === "absent"){
                 subject.attendedClasses = Math.max(0, subject.attendedClasses - 1);
@@ -216,11 +222,14 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
         subjectAttendance.status = subj_status;
         console.log("Updated Subject Attendance", subjectAttendance);
         await attendance.save();
-        res.status(200).json({
-            status: 200,
-            message: "Subject attendance updated successfully",
-            data: subjectAttendance,
-        });
+        // res.status(200).json({
+        //     status: 200,
+        //     message: "Subject attendance updated successfully",
+        //     data: subjectAttendance,
+        // });
+        res.status(200).json(
+            new ApiResponse(200, subjectAttendance, "Subject attendance updated successfully")
+        )
     } catch (error) {
         console.log(error);
         throw new ApiError(513, "Subject attendance update failed.");
@@ -253,17 +262,21 @@ export const subjectWiseAttendance = asyncHandler(async (req, res) => {
 // })
 
 export const subjectsData = asyncHandler(async (req, res) => {
-    const userId = req.user._id;
+    const user = await User.findOne({ clerk_id: req.auth().userId });
+    const user_id = user._id;
 
     const subjects = await Subject.find({
-        user_id: userId
+        user_id: user_id
     })
     if (!subjects){
         throw new ApiError(404, "No subjects found for this user.");
     }
-    res.status(200).json({
-        status: 200,
-        message: "Subjects fetched successfully",
-        data: subjects,
-    });
+    // res.status(200).json({
+    //     status: 200,
+    //     message: "Subjects fetched successfully",
+    //     data: subjects,
+    // });
+    res.status(200).json(
+        new ApiResponse(200, subjects,  "Subjects fetched successfully")
+    )
 })

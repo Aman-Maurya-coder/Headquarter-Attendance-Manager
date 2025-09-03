@@ -1,8 +1,10 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { User } from "../models/user.model.js";
 import { Schedule } from "../models/schedule.model.js";
 import { Subject } from "../models/subject.model.js";
+import { getAuth } from "@clerk/express";
 
 // {
 //     "sub_name": "operating system",
@@ -17,7 +19,8 @@ import { Subject } from "../models/subject.model.js";
 // }
 
 export const addSubject = asyncHandler(async (req, res) => {
-  const user_id = req.user._id;
+  const user = await User.findOne({ clerk_id: req.auth().userId });
+  const user_id = user._id;
   let { sub_name, sub_code, days, present, absent, cancelled } = req.body;
     // console.log(req.body);
   present = Number(present);
@@ -120,14 +123,15 @@ export const addSubject = asyncHandler(async (req, res) => {
 
   // Respond with success
   return res.status(200).json(
-    new ApiResponse(200, "Subject added successfully", {
+    new ApiResponse(200, {
       sub_name,
-    })
+    },"Subject added successfully")
   );
 });
 
 export const getSubjects = asyncHandler(async (req, res) => {
-  const user_id = req.user._id;
+  const user = await User.findOne({ clerk_id: req.auth().userId });
+  const user_id = user._id;
 //   console.log(user_id);
   // all subjects for the user
   const schedule = await Schedule.findOne({ user_id }).populate({
@@ -138,15 +142,15 @@ export const getSubjects = asyncHandler(async (req, res) => {
 
   const resp = schedule?.timetable || {};
 
-  res.status(200).json({
-    status: 200,
-    message: "Subjects fetched successfully",
-    data: resp,
-  });
+  
+  return res.status(200).json(
+    new ApiResponse(200, resp, "Subjects fetched successfully")
+  )
 });
 
 export const deleteSubject = asyncHandler(async (res, req) => {
-  const user_id = req.user._id;
+  const user = await User.findOne({ clerk_id: req.auth().userId });
+  const user_id = user._id;
   const { sub_code } = req.body;
   if (!sub_code) {
     throw new ApiError(400, "Subject code is required");
