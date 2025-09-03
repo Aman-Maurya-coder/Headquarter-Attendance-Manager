@@ -1,8 +1,13 @@
-// Frontend/src/App.jsx
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState } from "react";
+import React from "react";
+import "./App.css";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
-import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
+import Signin from "./pages/Signin";
+import Navbar from "./Components/Navbar";
+import Report from "./pages/Report";
+import Upload from "./pages/Upload";
 import Dashboard from "./pages/Dashboard";
 import HomeNavbar from "./Components/HomeNavbar"; // Create this component for Home page
 import { SignedIn, SignedOut, SignInButton, UserButton, SignIn, SignUp } from '@clerk/clerk-react'
@@ -31,61 +36,7 @@ function AppContent() {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        {/* --- Public Routes --- */}
-        <Route path="/" element={<Home />} />
-
-        {/* Signin: redirect if already signed in */}
-        <Route
-          path="/signin/*"
-          element={
-            <>
-              <SignedIn>
-                <Navigate to="/dashboard" replace />
-              </SignedIn>
-              <SignedOut>
-                <Signin />
-              </SignedOut>
-            </>
-          }
-        />
-
-        {/* Signup: redirect if already signed in */}
-        <Route
-          path="/signup/*"
-          element={
-            <>
-              <SignedIn>
-                <Navigate to="/dashboard" replace />
-              </SignedIn>
-              <SignedOut>
-                <Signup />
-              </SignedOut>
-            </>
-          }
-        />
-
-        {/* --- Protected Routes --- */}
-        <Route
-          element={
-            <>
-              <SignedIn>
-                <ProtectedLayout />
-              </SignedIn>
-              <SignedOut>
-                <Navigate to="/" replace />
-              </SignedOut>
-            </>
-          }
-        >
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/upload" element={<Upload />} />
-          <Route path="/report" element={<Report />} />
-        </Route>
-
-        {/* --- Fallback for unknown routes --- */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+      <AppContent />
     </BrowserRouter>
   );
 }

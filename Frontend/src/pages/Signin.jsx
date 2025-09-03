@@ -11,4 +11,4 @@ const Signin = () => {
   );
 };
 
-export default SignInPage;
+export default Signin;
